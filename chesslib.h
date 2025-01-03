@@ -15,11 +15,11 @@ const vector<int> chess_setup = {1,1,2,2,2,8}; // {kings, queens, rooks, bishops
 
 class Piece {
     char piece_type;
-    int piece_id;
-    bool side_up; // which team/side if the pawn on. 
+    int piece_id; // which team/side if the pawn on. 
 
     public:
         int x,y;
+        bool side_up;
 
         Piece(int id,vector<int> start_pos, bool side, char p_t); // constructor
         Piece();
