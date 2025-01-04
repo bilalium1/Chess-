@@ -5,6 +5,11 @@
 int main(){
 
     Chess game;
+    game.display();
+    game.move(1, {1,2});
+    game.see_moves(1);
+    game.is_check();
+    game.is_checkmate();
     
 
     //game loop
