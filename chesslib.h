@@ -31,13 +31,16 @@ class Chess {
     int round = 0;
     Piece* piece_list;  // No more 'Piece' undefined error
 
-    public:
 
+    public:
+        vector<int> cursor={0,0};
+        vector<int> select={-1,-1};
         Chess();
         ~Chess();
         void move(int id, vector<int> coords);
         void display(); 
         void see_moves(int id);
+        int get_piece(vector<int> coords);
         bool is_check();
         bool is_checkmate();
 };

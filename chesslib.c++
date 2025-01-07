@@ -108,20 +108,30 @@ void Chess::display(){
     for (int i = 0; i < 8; i++){
         cout << i << " ";
         for (int j = 0; j < 8; j++){
+            if (cursor[0]==j && cursor[1]==i){
+                cout << "\033[1;4m";
+            }
             bool printed = false;
             for (int k = 0; k < 32; k++){
                 if (piece_list[k].x == j && piece_list[k].y == i){
+
+                    if (select[0]==j && select[1]==i){
+                        cout<<"\033[41m";
+                    }
+
                     if (piece_list[k].side_up) {
                         cout << "\033[95m" << piece_list[k].piece_type << " ";  // Purple
                     } else {
                         cout << "\033[92m" << piece_list[k].piece_type << " ";  // Green
                     }
+                    cout<<"\033[0m";
+                    cout<<"\033[0m";
                     printed = true;
                     break;
                 }
             }
             if (!printed) {
-                cout << "\033[0m# ";  // Reset color for empty squares
+                cout << "#\033[0m ";  // Reset color for empty squares
             }
         }
         cout << "\033[0m" << endl;  // Reset after each line
@@ -159,6 +169,15 @@ void Chess::move(int id, vector<int> coords){
     else cout<<"This move is not possible! \n";
 }
 
+int Chess::get_piece(vector<int> coords){
+    for (int i=0;i<32;i++){
+        if (piece_list[i].x==coords[0] && piece_list[i].y==coords[1]){
+            return i;
+        }
+    }
+    return -1;
+}
+
 
 Chess::~Chess(){ delete[] piece_list; piece_list=NULL;}
 
@@ -168,9 +187,9 @@ void display(){
     }
 }
 
-int main(){
+/*int main(){
     Chess game;
     game.display();
 
     return 0;
-}
+}*/
