@@ -4,14 +4,29 @@
 #include <conio.h>
 #include <cstdlib>
 
+void clearScreen() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD coord = {0, 0};
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD charsWritten;
+
+    // Get the number of characters in the console
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
+
+    // Fill the console with spaces
+    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, coord, &charsWritten);
+
+    // Reset the cursor to the top left corner
+    SetConsoleCursorPosition(hConsole, coord);
+}
+
+
 int main(){
 
     Chess game;
     game.display();
     game.move(1, {1,2});
-
-
-
     
 
     //game loop
@@ -46,7 +61,7 @@ int main(){
                 default: cout << "Unknown key: " << key << "\n"; break;
             }
 
-            system("cls");
+            clearScreen();
             game.display();
             cout<<"x ="<<game.cursor[0]<<", y ="<<game.cursor[1];
 

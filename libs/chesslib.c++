@@ -21,7 +21,7 @@ bool Piece::move_verified(vector<int> coords){
         break;
     
     case 'Q':
-        if (coords[0]-x==0 || coords[1]-y==1 || (coords[0]-x==coords[1]-y))
+        if (coords[0]-x>0 || coords[1]-y>0)
             return true;
         else return false;
         break;
