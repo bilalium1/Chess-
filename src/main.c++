@@ -1,5 +1,5 @@
 #include <iostream>
-#include "chesslib.h"
+#include "C:\Users\b11\Desktop\c\GitReps\Chess-\libs\chesslib.h"
 #include <windows.h>
 #include <conio.h>
 #include <cstdlib>
@@ -26,7 +26,6 @@ int main(){
 
     Chess game;
     game.display();
-    game.move(1, {1,2});
     
 
     //game loop
@@ -43,10 +42,12 @@ int main(){
                     if (game.get_piece(game.cursor)!=-1){
                         if (game.select[0]==-1){
                             game.select[0]=game.cursor[0]; game.select[1]=game.cursor[1];
+                            game.select_piece=game.get_piece(game.cursor);
                         }
                         else {
                             if(game.cursor[0]==game.select[0] && game.cursor[1]==game.select[1]){
                                 game.select={-1,-1};
+                                game.select_piece=-1;
                             }
                         }
                     } 
@@ -55,6 +56,7 @@ int main(){
                         else {
                             game.move(game.get_piece(game.select), game.cursor);
                             game.select={-1,-1};
+                            game.select_piece=-1;
                         }
                     };
                     break;

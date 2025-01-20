@@ -35,14 +35,17 @@ class Chess {
     public:
         vector<int> cursor={0,0};
         vector<int> select={-1,-1};
+        vector<vector <int>> moves;
+        int select_piece=-1;
         Chess();
         ~Chess();
         void move(int id, vector<int> coords);
         void display(); 
-        void see_moves(int id);
+        void fill_moves(int id);
         int get_piece(vector<int> coords);
         bool is_check();
         bool is_checkmate();
+        bool verified(int id, vector<int> crds);
 };
 
 #endif

@@ -8,7 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
-                "chesslib.c++",
+                "libs/chesslib.c++",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

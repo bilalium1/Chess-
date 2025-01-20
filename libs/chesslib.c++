@@ -16,37 +16,37 @@ bool Piece::move_verified(vector<int> coords){
     switch (piece_type)
     {
     case 'K':
-        if (coords[0]-x==1 || coords[1]-y==1) return true;
+        if (abs(coords[0]-x)==1 || abs(coords[1]-y)==1) return true;
         else return false;
         break;
     
     case 'Q':
-        if (coords[0]-x>0 || coords[1]-y>0)
+        if ((abs(coords[0]-x)==0 || abs(coords[1]-y)==0) || abs(coords[0]-x)==abs(coords[1]-y))
             return true;
         else return false;
         break;
     
     case 'r':
-        if (coords[0]-x==0 || coords[1]-y==1)
+        if (abs(coords[0]-x)==0 || abs(coords[1]-y)==0)
             return true;
         else return false;
         break;
     
     case 'b':
-        if (coords[0]-x==coords[1]-y) 
+        if (abs(coords[0]-x)==abs(coords[1]-y)) 
             return true;
         else return false;
         break;
     
     case 'k':
         if (abs(coords[0]-x)==2 && abs(coords[1]-y)==1
-        ||  abs(coords[1]-y)==1 && abs(coords[0]-x)==1)
+        ||  abs(coords[1]-y)==2 && abs(coords[0]-x)==1)
             return 1;
         else return 0;
         break;
     
     case 'p':
-        /* code */
+        if (coords[1]-y==1*side_up)
         break;
     
     default:
@@ -96,6 +96,17 @@ Chess::Chess(){
         {piece_list[j]=Piece(j,{i,6},false,'p');}
 }
 
+bool Chess::verified(int id, vector<int> crds){
+
+    int pc_id=get_piece(crds);
+
+    if (piece_list[pc_id].side_up==piece_list[id].side_up){
+        return false;
+    }
+
+    return piece_list[id].move_verified(crds);
+}
+
 void Chess::display(){
     for (int i=0;i<32;i++){
         cout<<piece_list[i].piece_id<<":"<<piece_list[i].piece_type;
@@ -108,6 +119,13 @@ void Chess::display(){
     for (int i = 0; i < 8; i++){
         cout << i << " ";
         for (int j = 0; j < 8; j++){
+
+            if (select_piece!=-1){
+                if (verified(select_piece, {j,i})){
+                    cout<<"\033[43m";
+                }
+            }
+            
             if (cursor[0]==j && cursor[1]==i){
                 cout << "\033[1;4m";
             }
@@ -115,7 +133,7 @@ void Chess::display(){
             for (int k = 0; k < 32; k++){
                 if (piece_list[k].x == j && piece_list[k].y == i){
 
-                    if (select[0]==j && select[1]==i){
+                    if (select_piece==k){
                         cout<<"\033[41m";
                     }
 
@@ -131,7 +149,7 @@ void Chess::display(){
                 }
             }
             if (!printed) {
-                cout << "#\033[0m ";  // Reset color for empty squares
+                cout << "O\033[0m ";  // Reset color for empty squares
             }
         }
         cout << "\033[0m" << endl;  // Reset after each line
