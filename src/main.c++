@@ -39,26 +39,18 @@ int main(){
                 case 75: if(game.cursor[0]>0)--game.cursor[0]; break; //left
                 case 77: if(game.cursor[0]<7)++game.cursor[0]; break; //right
                 case 13:
-                    if (game.get_piece(game.cursor)!=-1){
-                        if (game.select[0]==-1){
+                    if (game.select_piece==-1){
+                        // select piece
+                        if (game.get_piece(game.cursor)!=-1){
                             game.select[0]=game.cursor[0]; game.select[1]=game.cursor[1];
                             game.select_piece=game.get_piece(game.cursor);
                         }
-                        else {
-                            if(game.cursor[0]==game.select[0] && game.cursor[1]==game.select[1]){
-                                game.select={-1,-1};
-                                game.select_piece=-1;
-                            }
-                        }
-                    } 
-                    else {
-                        if(game.select[0]==-1)cout<<"this is not a chess piece mate";
-                        else {
-                            game.move(game.get_piece(game.select), game.cursor);
-                            game.select={-1,-1};
-                            game.select_piece=-1;
-                        }
-                    };
+                    } else {
+                        // move piece
+                        game.move(game.get_piece(game.select), game.cursor);
+                        game.select={-1,-1};
+                        game.select_piece=-1;
+                    }
                     break;
                 default: cout << "Unknown key: " << key << "\n"; break;
             }

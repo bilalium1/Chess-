@@ -41,12 +41,15 @@ bool Piece::move_verified(vector<int> coords){
     case 'k':
         if (abs(coords[0]-x)==2 && abs(coords[1]-y)==1
         ||  abs(coords[1]-y)==2 && abs(coords[0]-x)==1)
-            return 1;
-        else return 0;
+            return true;
+        else return false;
         break;
     
     case 'p':
-        if (coords[1]-y==1*side_up)
+        if (coords[1]-y==1*side_up && coords[0]-x==0)
+            return true;
+        else return false;
+        
         break;
     
     default:
@@ -96,15 +99,39 @@ Chess::Chess(){
         {piece_list[j]=Piece(j,{i,6},false,'p');}
 }
 
-bool Chess::verified(int id, vector<int> crds){
+int Chess::move_type(int id, vector<int> crds){
 
-    int pc_id=get_piece(crds);
+    // -2 no move
+    // -1 normal move
+    // >0 eat move
 
-    if (piece_list[pc_id].side_up==piece_list[id].side_up){
-        return false;
+    Piece curr=piece_list[id];
+    int move_verf=piece_list[id].move_verified(crds);
+
+    if (move_verf){
+
+            if (get_piece(crds)>-1){
+
+            Piece target=piece_list[get_piece(crds)];
+
+            if (target.side_up==curr.side_up){
+                return -1;
+            }
+
+            if (target.side_up==!(curr.side_up)){
+                return 1;
+            }
+
+        } else return 0;
     }
 
-    return piece_list[id].move_verified(crds);
+    /*if (piece_list[id].piece_type=='p'){
+        if (crds[1]-curr.y==1*piece_list[id].side_up && abs(crds[0]-curr.x)==1)
+            return 1;
+        
+        if (crds[1]-curr.y==2*piece_list[id].side_up && abs(crds[0]-curr.x)==0 && ((curr.y==1 && curr.side_up) || (curr.y==6 && !(curr.side_up))))
+            return 0;
+    }*/
 }
 
 void Chess::display(){
@@ -121,8 +148,12 @@ void Chess::display(){
         for (int j = 0; j < 8; j++){
 
             if (select_piece!=-1){
-                if (verified(select_piece, {j,i})){
+                if (move_type(select_piece, {j,i})==0){
                     cout<<"\033[43m";
+                }
+
+                if (move_type(select_piece, {j,i})==1){
+                    cout<<"\033[44m";
                 }
             }
             
@@ -158,33 +189,23 @@ void Chess::display(){
 
 void Chess::move(int id, vector<int> coords){
     // check if move is possible
-    bool verified=piece_list[id].move_verified(coords);
-    bool is_eat=false;
-    bool is_collision=false;
+    int move_id=move_type(id,coords);
     int eaten_id=0;
 
-    // check if place is already take or its an eat move
-    for (int i=0;i<32;i++){
-        if (i!=id && piece_list[i].x==coords[0] && piece_list[i].y==coords[1]){
-            is_collision=(piece_list[i].side_up==piece_list[i].side_up);
-            is_eat=!(piece_list[i].side_up==piece_list[i].side_up);
-            if (is_eat){eaten_id=i;}
-        }
+    cout<<"MOVE ID : "<<move_id<<endl;
+
+    if (move_id==1){
+        cout<<"hello";
+        eaten_id=get_piece(coords);
+        piece_list[eaten_id].x=-1; piece_list[eaten_id].y=-1;
+        piece_list[id].x=coords[0]; piece_list[id].y=coords[1];
     }
 
-    if (verified){
-        // collision
-        if (is_collision) cout<<"move impossible : place already taken.";
-        // eat
-        if (is_eat) 
-        {cout<<"piece "<<piece_list[eaten_id].piece_type<<" eaten!"; 
-        piece_list[eaten_id].piece_id=-1;
-        piece_list[id].x=coords[0]; piece_list[id].y=coords[1];} 
-        // move
-        if (is_collision==false && is_eat==false)
-        {cout<<"move done!"; piece_list[id].x=coords[0]; piece_list[id].y=coords[1];}
+    if (move_id==0){
+        cout<<"move normal";
+        piece_list[id].x=coords[0]; piece_list[id].y=coords[1];
     }
-    else cout<<"This move is not possible! \n";
+
 }
 
 int Chess::get_piece(vector<int> coords){
