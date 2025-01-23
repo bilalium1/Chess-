@@ -57,7 +57,7 @@ int main(){
 
             clearScreen();
             game.display();
-            cout<<"x ="<<game.cursor[0]<<", y ="<<game.cursor[1];
+            //cout<<"x ="<<game.cursor[0]+1<<", y ="<<game.cursor[1]+1;
 
 
             if (key=='q'){
