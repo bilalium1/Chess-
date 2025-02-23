@@ -1,5 +1,5 @@
 #include <iostream>
-#include "C:\Users\b11\Desktop\c\GitReps\Chess-\libs\chesslib.h"
+#include "chesslib.h"
 #include <windows.h>
 #include <conio.h>
 #include <cstdlib>

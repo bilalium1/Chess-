@@ -1,6 +1,7 @@
 #include <iostream>
 #include "chesslib.h"
 #include <vector>
+
 using namespace std;
  // {kings, queens, rooks, bishops, knights, pawns}
 
@@ -142,11 +143,13 @@ int8_t Chess::move_type(int8_t id, vector<int8_t> crds){
     int8_t move_verf=piece_list[id].move_verified(crds);
     int8_t target_id=get_piece(crds);
 
-    if (target_id>-1 && piece_list[target_id].side_up){
+    if (target_id>-1 && piece_list[target_id].side_up==curr.side_up){
         // ally piece
         // test if its blocking the way
         if (check_for_blockers(piece_list[target_id], curr)) return -1;
         else return 0;
+
+        return -1;
     }
 
     if (curr.piece_type == 'p') {
@@ -158,8 +161,7 @@ int8_t Chess::move_type(int8_t id, vector<int8_t> crds){
             else return -1;
         } else if (abs(crds[0] - curr.x)==1 && crds[1]-curr.y==1*curr.side_up) {
             // Diagonal capture'
-            int8_t id;
-            if (id > -1) return 1;
+            if (target_id > -1) return 1;
             else return -1;
         } else {
             return -1; // Invalid move
