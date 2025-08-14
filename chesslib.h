@@ -20,7 +20,7 @@ class Piece {
         int8_t piece_id;
         int8_t x,y;
         int8_t x_s, y_s;
-        int8_t side_up;
+        bool side_up = true;
 
         Piece(int8_t id,vector<int8_t> start_pos, int8_t side, char p_t); // constructor
         Piece();
@@ -34,14 +34,15 @@ class Chess {
 
 
     public:
-        vector<int8_t> cursor={0,0};
-        vector<int8_t> select={-1,-1};
+        vector<int8_t> cursor= {0,0};
+        vector<int8_t> select= {-1,-1};
         int8_t select_piece=-1;
         Chess();
         ~Chess();
-        void move(int8_t id, vector<int8_t> crds);
+        int move(int8_t id, vector<int8_t> crds);
         void display(); 
         int8_t get_piece(vector<int8_t> crds);
+        bool turn = true;
         bool is_check();
         bool is_checkmate();
         int8_t move_type(int8_t id, vector<int8_t> crds);
