@@ -5,72 +5,67 @@
 using namespace std;
  // {kings, queens, rooks, bishops, knights, pawns}
 
-Piece::Piece(int8_t id, vector<int8_t> s_pos, int8_t side, char p_t){
+Piece::Piece(int id, vector<int> s_pos, int side, char p_t){
     piece_id=id; x=s_pos[0]; y=s_pos[1]; side_up=side; piece_type=p_t; x_s=s_pos[0]; y_s=s_pos[1]; 
 }
 
 Piece::Piece(){piece_id=0; x=0; y=0; side_up=1; piece_type=' '; x_s=0; y_s=0;}
 Piece::~Piece(){}
 
-bool king_verify(int8_t x, int8_t y, vector<int8_t> crds){
+bool king_verify(int x, int y, vector<int> crds){
     if (abs(crds[0]-x) + abs(crds[1]-y)<3 && !(abs(crds[0]-x)==2 || abs(crds[1]-y)==2)) return true;
     else return false;
 }
 
-bool rook_verify(int8_t x, int8_t y, vector<int8_t> crds){
+bool rook_verify(int x, int y, vector<int> crds){
     if (abs(crds[0]-x)==0 || abs(crds[1]-y)==0)
         return true;
     else return false;
 }
 
-bool bishop_verify(int8_t x, int8_t y, vector<int8_t> crds){
+bool bishop_verify(int x, int y, vector<int> crds){
     if (abs(crds[0]-x)==abs(crds[1]-y)) 
         return true;
     else return false;
 }
 
-bool knight_verify(int8_t x, int8_t y, vector<int8_t> crds){
+bool knight_verify(int x, int y, vector<int> crds){
     if (abs(crds[0]-x)==2 && abs(crds[1]-y)==1 ||  abs(crds[1]-y)==2 && abs(crds[0]-x)==1)
         return true;
     else return false;
 }
 
-bool Chess::check_for_blockers(Piece target, Piece curr){
+bool Chess::check_for_blockers(vector<int> target, Piece curr){
 
-    int8_t dx=target.x-curr.x;
-    int8_t dy=target.y-curr.y;
-
-    if (target.piece_type=='k')
+    if (curr.piece_type=='k')
         return false;
 
-    int cof = (curr.side_up) ? 1 : -1;
+    int dx=target[0]-curr.x;
+    int dy=target[1]-curr.y;
 
-    if (dx==0){
-        while (dy!=0){
-            dy-=cof;
-            if (get_piece({curr.x, static_cast<int8_t>(curr.y + dy)})) return true;
-        }
-    }
-    else if (dy==0)
+    vector<int> crd = {target[0], target[1]};
+
+    dx = (dx == 0 ? 0 : dx / abs(dx));
+    dy = (dy == 0 ? 0 : dy / abs(dy));
+
+    crd[0] -= dx;
+    crd[1] -= dy;
+
+    while (crd[0] != curr.x || crd[1] != curr.y)
     {
-        while (dx!=0){
-            dx-=cof;
-            if (get_piece({curr.y, static_cast<int8_t>(curr.x + dx)})) return true;
-        }
-    }
-    else {
-        while (dx!=0 && dy!=0){
-            dy-=cof;
-            dx-=cof;
-            if (get_piece({static_cast<int8_t>(curr.x + dx), static_cast<int8_t>(curr.y + dy)})) return true;
-        }
+
+        if (get_piece(crd) > -1)
+            return true;
+        
+        crd[0] -= dx;
+        crd[1] -= dy;
     }
 
     return false;
     
 }
 
-bool Piece::move_verified(vector<int8_t> crds){
+bool Piece::move_verified(vector<int> crds){
 
     switch (piece_type)
     {
@@ -100,8 +95,10 @@ bool Piece::move_verified(vector<int8_t> crds){
 Chess::Chess(){
 
     piece_list = new Piece[32];
+    p1_list = new Piece[16];
+    p2_list = new Piece[16];
     
-    int8_t j=0;
+    int j=0;
 
     // UPSIDE TEAM
     // king
@@ -117,7 +114,7 @@ Chess::Chess(){
     // knights
     piece_list[j]=Piece(j, {2,0},true, 'k'); ++j;
     piece_list[j]=Piece(j, {5,0},true, 'k'); ++j;
-    for (int8_t i=0; i<8; i++,j++)
+    for (int i=0; i<8; i++,j++)
         {piece_list[j]=Piece(j,{i,1},true,'p');} 
 
     // DOWNSIDE TEAM
@@ -134,29 +131,25 @@ Chess::Chess(){
     // knights
     piece_list[j]=Piece(j, {2,7},false, 'k'); ++j;
     piece_list[j]=Piece(j, {5,7},false, 'k'); ++j;
-    for (int8_t i=0; i<8; i++,j++)
+    for (int i=0; i<8; i++,j++)
         {piece_list[j]=Piece(j,{i,6},false,'p');}
 }
 
-int8_t Chess::move_type(int8_t id, vector<int8_t> crds){
+int Chess::move_type(int id, vector<int> crds){
 
     // -1 no move
     // 0 normal move
     // 1 eat move
 
     Piece curr=piece_list[id];
-    int8_t move_verf=piece_list[id].move_verified(crds);
-    int8_t target_id=get_piece(crds);
+    int move_verf=piece_list[id].move_verified(crds);
+    int target_id=get_piece(crds);
 
     if (target_id == id)
         return -1;
 
-    if (target_id>-1 && piece_list[target_id].side_up==curr.side_up){
+    if (target_id > -1 && piece_list[target_id].side_up==curr.side_up){
         // ally piece
-        // test if its blocking the way
-        if (check_for_blockers(piece_list[target_id], curr)) return -1;
-        else return 0;
-
         return -1;
     }
 
@@ -180,32 +173,48 @@ int8_t Chess::move_type(int8_t id, vector<int8_t> crds){
 
     if (move_verf){
 
-            if (get_piece(crds)>-1){
+        if (check_for_blockers(crds, curr))
+            return -1;
 
+        if (get_piece(crds)>-1){
             Piece target=piece_list[get_piece(crds)];
 
-            if (target.side_up!=(curr.side_up)){
+            if (target.side_up!=curr.side_up)
                 return 1;
-            }
-
-        } else return 0;
+        } 
+        else 
+            return 0;
     }
 
 }
 
 void Chess::display(){
 
+    int i = 0;
+
     if (turn)
-        cout << "\033[45m Player 1 \033[0m" << endl;
+    {
+        cout << "\033[1;45m Player 1";
+        i = p1_count;
+        while (i >= 0)
+            cout << p1_list[i--].piece_type << " < ";
+        cout << " \033[0m" << endl;
+    }
     else
-        cout << "\033[42m Player 2 \033[0m" << endl;
+    {
+        cout << "\033[1;42m Player 2";
+        i = p2_count;
+        while (i >= 0)
+            cout << p2_list[i--].piece_type << " < ";
+        cout << " \033[0m" << endl;
+    }
     
     cout<<endl;
-    cout << "  0 1 2 3 4 5 6 7\n";
+    cout << "\033[47m\033[30m   A B C D E F G H   \033[0m\n";
 
-    for (int8_t i = 0; i < 8; i++){
-        cout << i+1 << " ";
-        for (int8_t j = 0; j < 8; j++){
+    for (int i = 0; i < 8; i++){
+        cout << "\033[47m\033[30m"<< i+1 << " \033[0m ";
+        for (int j = 0; j < 8; j++){
 
             if (select_piece!=-1 && (cursor[0]!=j || cursor[1]!=i)){
                 if (move_type(select_piece, {j,i})==0){
@@ -218,14 +227,14 @@ void Chess::display(){
             }
             
             if (cursor[0]==j && cursor[1]==i){
-                cout << "\033[45m";
                 if (turn)
-                    cout << "\033[45m";
+                    cout << "\033[45m\033[30m";
                 else 
-                    cout << "\033[42m";
+                    cout << "\033[42m\033[30m";
             }
+
             bool printed = false;
-            for (int8_t k = 0; k < 32; k++){
+            for (int k = 0; k < 32; k++){
                 if (piece_list[k].x == j && piece_list[k].y == i){
 
                     if (select_piece==k){
@@ -244,25 +253,30 @@ void Chess::display(){
                 }
             }
             if (!printed) {
-                cout << "$\033[0m ";  // Reset color for empty squares
+                cout << "-\033[0m ";  // Reset color for empty squares
             }
         }
+        cout << "\033[47m\033[30m  \033[0m";
         cout << "\033[0m" << endl;  // Reset after each line
     }
+    cout << "\033[47m\033[30m                     \033[0m";
 }
 
-int Chess::move(int8_t id, vector<int8_t> crds){
+int Chess::move(int id, vector<int> crds){
     // check if move is possible
-    int8_t move_id=move_type(id,crds);
-    int8_t eaten_id=0;
+    int move_id=move_type(id,crds);
+    int eaten_id=0;
 
     cout<<"MOVE ID : "<<move_id<<endl;
 
     if (move_id==1){
-        cout<<"hello";
         eaten_id=get_piece(crds);
         piece_list[eaten_id].x=-1; piece_list[eaten_id].y=-1;
         piece_list[id].x=crds[0]; piece_list[id].y=crds[1];
+
+        if (piece_list[id].side_up) p1_list[p1_count++] = piece_list[eaten_id];
+
+        else p2_list[p2_count++] = piece_list[eaten_id];
     }
 
     if (move_id==0){
@@ -274,8 +288,8 @@ int Chess::move(int8_t id, vector<int8_t> crds){
 
 }
 
-int8_t Chess::get_piece(vector<int8_t> crds){
-    for (int8_t i=0;i<32;i++){
+int Chess::get_piece(vector<int> crds){
+    for (int i=0;i<32;i++){
         if (piece_list[i].x==crds[0] && piece_list[i].y==crds[1]){
             return i;
         }
@@ -284,10 +298,14 @@ int8_t Chess::get_piece(vector<int8_t> crds){
 }
 
 
-Chess::~Chess(){ delete[] piece_list; piece_list=NULL;}
+Chess::~Chess(){ 
+    delete[] piece_list; piece_list=NULL;
+    delete[] p1_list; p1_list=NULL;
+    delete[] p2_list; p2_list=NULL;
+}
 
 void display(){
-    for (int8_t i=0;i<8;i++){
+    for (int i=0;i<8;i++){
         cout << "* * * * * * * *\n";
     }
 }

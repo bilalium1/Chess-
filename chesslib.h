@@ -17,36 +17,40 @@ class Piece {
 
     public:
         char piece_type;
-        int8_t piece_id;
-        int8_t x,y;
-        int8_t x_s, y_s;
+        int piece_id;
+        int x,y;
+        int x_s, y_s;
         bool side_up = true;
 
-        Piece(int8_t id,vector<int8_t> start_pos, int8_t side, char p_t); // constructor
+        Piece(int id,vector<int> start_pos, int side, char p_t); // constructor
         Piece();
         ~Piece();
-        bool move_verified(vector<int8_t> crds);
+        bool move_verified(vector<int> crds);
 };
 
 class Chess {
     int16_t round = 0;
     Piece* piece_list;  // No more 'Piece' undefined error
+    Piece* p1_list;
+    Piece* p2_list;
+    int p1_count = 0;
+    int p2_count = 0;
 
 
     public:
-        vector<int8_t> cursor= {0,0};
-        vector<int8_t> select= {-1,-1};
-        int8_t select_piece=-1;
+        vector<int> cursor= {0,0};
+        vector<int> select= {-1,-1};
+        int select_piece=-1;
         Chess();
         ~Chess();
-        int move(int8_t id, vector<int8_t> crds);
+        int move(int id, vector<int> crds);
         void display(); 
-        int8_t get_piece(vector<int8_t> crds);
+        int get_piece(vector<int> crds);
         bool turn = true;
         bool is_check();
         bool is_checkmate();
-        int8_t move_type(int8_t id, vector<int8_t> crds);
-        bool check_for_blockers(Piece target, Piece curr);
+        int move_type(int id, vector<int> crds);
+        bool check_for_blockers(vector<int> target, Piece curr);
 };
 
 #endif

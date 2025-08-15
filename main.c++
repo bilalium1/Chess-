@@ -56,10 +56,11 @@ int main(){
                             game.turn = !game.turn;
                     }
                     break;
-                default: cout << "Unknown key: " << key << "\n"; break;
+                default: break;
             }
 
-            clearScreen();
+            //clearScreen();
+            system("cls");
             game.display();
             //cout<<"x ="<<game.cursor[0]+1<<", y ="<<game.cursor[1]+1;
 
