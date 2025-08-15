@@ -55,7 +55,6 @@ int main(){
                 default: break;
             }
 
-            //clearScreen();
             system("cls");
             game.display();
             //cout<<"x ="<<game.cursor[0]+1<<", y ="<<game.cursor[1]+1;
