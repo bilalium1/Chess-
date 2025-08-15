@@ -103,12 +103,18 @@ Chess::Chess(){
     // UPSIDE TEAM
     // king
     piece_list[j]=Piece(j, {4,0},true, 'K'); ++j;
+    piece_list[j]=Piece(j, {4,0},true, 'K'); ++j;
     // queen 
+    piece_list[j]=Piece(j, {3,0},true, 'Q'); ++j;
     piece_list[j]=Piece(j, {3,0},true, 'Q'); ++j;
     // rooks
     piece_list[j]=Piece(j, {0,0},true, 'r'); ++j;
     piece_list[j]=Piece(j, {7,0},true, 'r'); ++j;
+    piece_list[j]=Piece(j, {0,0},true, 'r'); ++j;
+    piece_list[j]=Piece(j, {7,0},true, 'r'); ++j;
     // bishops
+    piece_list[j]=Piece(j, {1,0},true, 'b'); ++j;
+    piece_list[j]=Piece(j, {6,0},true, 'b'); ++j;
     piece_list[j]=Piece(j, {1,0},true, 'b'); ++j;
     piece_list[j]=Piece(j, {6,0},true, 'b'); ++j;
     // knights
@@ -120,12 +126,18 @@ Chess::Chess(){
     // DOWNSIDE TEAM
 
     piece_list[j]=Piece(j, {4,7},false, 'K'); ++j;
+    piece_list[j]=Piece(j, {4,7},false, 'K'); ++j;
     // queen 
+    piece_list[j]=Piece(j, {3,7},false, 'Q'); ++j;
     piece_list[j]=Piece(j, {3,7},false, 'Q'); ++j;
     // rooks
     piece_list[j]=Piece(j, {0,7},false, 'r'); ++j;
     piece_list[j]=Piece(j, {7,7},false, 'r'); ++j;
+    piece_list[j]=Piece(j, {0,7},false, 'r'); ++j;
+    piece_list[j]=Piece(j, {7,7},false, 'r'); ++j;
     // bishops
+    piece_list[j]=Piece(j, {1,7},false, 'b'); ++j;
+    piece_list[j]=Piece(j, {6,7},false, 'b'); ++j;
     piece_list[j]=Piece(j, {1,7},false, 'b'); ++j;
     piece_list[j]=Piece(j, {6,7},false, 'b'); ++j;
     // knights
@@ -137,6 +149,9 @@ Chess::Chess(){
 
 int Chess::move_type(int id, vector<int> crds){
 
+    // -1 no move
+    // 0 normal move
+    // 1 eat move
     // -1 no move
     // 0 normal move
     // 1 eat move
@@ -157,11 +172,16 @@ int Chess::move_type(int id, vector<int> crds){
 
         int coeff = (curr.side_up) ? 1 : -1; 
 
+        int coeff = (curr.side_up) ? 1 : -1; 
+
         if (crds[0]-curr.x==0) {
             // Forward movement
             if (crds[1]-curr.y==1*coeff && get_piece(crds)==-1) return 0;
             else if (crds[1] - curr.y == 2 * coeff && curr.y == curr.y_s && get_piece(crds) == -1) return 0;
+            if (crds[1]-curr.y==1*coeff && get_piece(crds)==-1) return 0;
+            else if (crds[1] - curr.y == 2 * coeff && curr.y == curr.y_s && get_piece(crds) == -1) return 0;
             else return -1;
+        } else if (abs(crds[0] - curr.x)==1 && crds[1]-curr.y==1*coeff) {
         } else if (abs(crds[0] - curr.x)==1 && crds[1]-curr.y==1*coeff) {
             // Diagonal capture'
             if (target_id > -1) return 1;
@@ -217,11 +237,14 @@ void Chess::display(){
         for (int j = 0; j < 8; j++){
 
             if (select_piece!=-1 && (cursor[0]!=j || cursor[1]!=i)){
+            if (select_piece!=-1 && (cursor[0]!=j || cursor[1]!=i)){
                 if (move_type(select_piece, {j,i})==0){
+                    cout<<"\033[43m"; // YELLOW BACKGROUND, MOVE
                     cout<<"\033[43m"; // YELLOW BACKGROUND, MOVE
                 }
 
                 if (move_type(select_piece, {j,i})==1){
+                    cout<<"\033[44m"; // BLUE BACKGROUND, EAT
                     cout<<"\033[44m"; // BLUE BACKGROUND, EAT
                 }
             }
@@ -283,6 +306,8 @@ int Chess::move(int id, vector<int> crds){
         cout<<"move normal";
         piece_list[id].x=crds[0]; piece_list[id].y=crds[1];
     }
+
+    return move_id;
 
     return move_id;
 

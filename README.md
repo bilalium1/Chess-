@@ -12,7 +12,7 @@ Left - move cursor to the left.
 
 This is what the game looks like : 
 
-
+```
   0 1 2 3 4 5 6 7
 0 r b k Q K k b r 
 1 p p p p p p p p 
@@ -22,7 +22,7 @@ This is what the game looks like :
 5 # # # # # # # #
 6 p p p p p p p p 
 7 r b k Q K k b r
-
+```
 
 Thanks for reading. :)
 
