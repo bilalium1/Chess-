@@ -3,25 +3,8 @@
 #include <windows.h>
 #include <conio.h>
 #include <cstdlib>
-#include <windows.h>
-#include <conio.h>
-#include <cstdlib>
 
 void clearScreen() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = {0, 0};
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    DWORD charsWritten;
-
-    // Get the number of characters in the console
-    GetConsoleScreenBufferInfo(hConsole, &csbi);
-    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
-
-    // Fill the console with spaces
-    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, coord, &charsWritten);
-
-    // Reset the cursor to the top left corner
-    SetConsoleCursorPosition(hConsole, coord);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord = {0, 0};
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -39,9 +22,6 @@ void clearScreen() {
 }
 
 
-
-int main(){
-
 int main(){
 
     Chess game;
@@ -51,13 +31,7 @@ int main(){
     
 
     //game loop
-    int mv;
-    
-
-    //game loop
     while (1) {
-        if (_kbhit()){
-            char key = _getch();
         if (_kbhit()){
             char key = _getch();
 
@@ -85,16 +59,8 @@ int main(){
                 default: break;
             }
 
-            //clearScreen();
             system("cls");
             game.display();
-            //cout<<"x ="<<game.cursor[0]+1<<", y ="<<game.cursor[1]+1;
-
-
-            if (key=='q'){
-                cout << "game finished.";
-                break;
-            }
             //cout<<"x ="<<game.cursor[0]+1<<", y ="<<game.cursor[1]+1;
 
 
