@@ -139,9 +139,13 @@ void Chess::display(){
     cout<<endl;
     cout << "\033[47m\033[30m   A B C D E F G H   \033[0m\n";
 
+    vector<int> check_up = in_check(true);
+    vector<int> check_down = in_check(false);
+
     for (int i = 0; i < 8; i++){
         cout << "\033[47m\033[30m"<< i+1 << " \033[0m ";
         for (int j = 0; j < 8; j++){
+
             if (select_piece!=-1 && (cursor[0]!=j || cursor[1]!=i)){
                 if (move_type(select_piece, {j,i})==0) cout<<"\033[43m"; // MOVE
                 if (move_type(select_piece, {j,i})==1) cout<<"\033[44m"; // EAT
@@ -154,6 +158,11 @@ void Chess::display(){
             bool printed = false;
             for (int k = 0; k < 32; k++){
                 if (piece_list[k].x == j && piece_list[k].y == i){
+                    if (piece_list[k].piece_type == 'K')
+                    {
+                        if (piece_list[k].side_up) cout << (check_up[0] != -1 ? "\033[42m" : "");
+                        else cout << (check_down[0] != -1 ? "\033[42m" : "");
+                    }
                     if (select_piece==k) cout<<"\033[41m";
                     cout << (piece_list[k].side_up==1 ? "\033[95m" : "\033[92m") << piece_list[k].piece_type << " ";
                     cout<<"\033[0m";
@@ -166,6 +175,8 @@ void Chess::display(){
         cout << "\033[47m\033[30m  \033[0m\n";
     }
     cout << "\033[47m\033[30m                     \033[0m";
+    cout << (check_up[0]!=-1 ? "PLAYER 1 IN CHECK\n" : "");
+    cout << (check_down[0]!=-1 ? "PLAYER 2 IN CHECK\n" : "");
 }
 
 int Chess::move(int id, vector<int> crds){
@@ -188,6 +199,36 @@ int Chess::move(int id, vector<int> crds){
     }
 
     return move_id;
+}
+
+vector<int> Chess::in_check(bool side)
+{
+    int i = 0;
+    while (i < 32)
+    {
+        if (piece_list[i].piece_type == 'K' && piece_list[i].side_up == side)
+            break;
+        i++;
+    }
+
+    if (i == 32) return {-1, -1};
+
+    Piece king = piece_list[i];
+    i = 0;
+    while (i < 32)
+    {
+        if (piece_list[i].side_up != side)
+        {
+            if (move_type(i, {king.x, king.y}) == 1)
+            {
+                return {piece_list[i].x, piece_list[i].y}; 
+            }
+        }
+        i++;
+    }
+
+    return {-1, -1};
+    
 }
 
 int Chess::get_piece(vector<int> crds){
