@@ -54,7 +54,8 @@ int main(){
                     break;
                 default: break;
             }
-
+            if (game.is_checkmate() != 0)
+                break;                
             system("cls");
             game.display();
             //cout<<"x ="<<game.cursor[0]+1<<", y ="<<game.cursor[1]+1;
@@ -66,6 +67,10 @@ int main(){
             }
         }
     }
+
+    if (game.is_checkmate() == 1) cout << "PLAYER 1 WINS";
+    if (game.is_checkmate() == -1) cout << "PLAYER 2 WINS";
+    if (game.is_checkmate() == 0) cout << "GAME OVER"; 
 
     return 0;
 }

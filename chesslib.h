@@ -48,7 +48,7 @@ class Chess {
         int get_piece(vector<int> crds);
         bool turn = true;
         vector<int> in_check(bool side);
-        bool is_checkmate();
+        int is_checkmate();
         int move_type(int id, vector<int> crds);
         bool check_for_blockers(vector<int> target, Piece curr);
 };

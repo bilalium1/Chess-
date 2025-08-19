@@ -200,16 +200,14 @@ void Chess::display(){
         }
         cout << "\033[47m\033[30m  \033[0m\n";
     }
-    cout << "\033[47m\033[30m                     \033[0m";
-    cout << (check_up[0]!=-1 ? "PLAYER 1 IN CHECK\n" : "");
-    cout << (check_down[0]!=-1 ? "PLAYER 2 IN CHECK\n" : "");
+    cout << "\033[47m\033[30m                     \033[0m\n";
+    cout << (check_up[0]!=-1 ? "PLAYER 1 IN CHECK\n\n" : "");
+    cout << (check_down[0]!=-1 ? "PLAYER 2 IN CHECK\n\n" : "");
 }
 
 int Chess::move(int id, vector<int> crds){
     int move_id=move_type(id,crds);
     int eaten_id=0;
-
-    cout<<"MOVE ID : "<<move_id<<endl;
 
     if (move_id==1){
         eaten_id=get_piece(crds);
@@ -220,7 +218,6 @@ int Chess::move(int id, vector<int> crds){
     }
 
     if (move_id==0){
-        cout<<"move normal";
         piece_list[id].x=crds[0]; piece_list[id].y=crds[1];
     }
 
@@ -254,8 +251,15 @@ vector<int> Chess::in_check(bool side)
         i++;
     }
 
-    return {-1, -1};
-    
+    return {-1, -1};    
+}
+
+int Chess::is_checkmate()
+{
+    if (in_check(false)[0]!=-1 && turn) return 1;
+    if (in_check(true)[0]!=-1 && !turn) return -1;
+
+    return 0;
 }
 
 int Chess::get_piece(vector<int> crds){
