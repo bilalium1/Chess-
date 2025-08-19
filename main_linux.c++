@@ -99,10 +99,17 @@ int main() {
                 std::cout << "Unknown key: " << (int)key << "\n";
             }
 
+            if (game.is_checkmate() != 0)
+                break;   
+
             clearScreen();
             game.display();
         }
     }
+
+    if (game.is_checkmate() == 1) cout << "PLAYER 1 WINS";
+    if (game.is_checkmate() == -1) cout << "PLAYER 2 WINS";
+    if (game.is_checkmate() == 0) cout << "GAME OVER"; 
 
     setRawMode(false); // restore terminal
     return 0;
