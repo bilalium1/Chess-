@@ -219,6 +219,7 @@ int Chess::move(int id, vector<int> crds){
 
     if (move_id==0){
         piece_list[id].x=crds[0]; piece_list[id].y=crds[1];
+        pawn_change();
     }
 
     return move_id;
@@ -267,6 +268,18 @@ int Chess::get_piece(vector<int> crds){
         if (piece_list[i].x==crds[0] && piece_list[i].y==crds[1]) return i;
     }
     return -1;
+}
+
+int Chess::pawn_change()
+{
+    for (int i=0;i<32;i++)
+    {
+        if (piece_list[i].piece_type=='p')
+        {
+            if ((piece_list[i].y == 7 && piece_list[i].side_up) || (piece_list[i].y == 0 && !piece_list[i].side_up))
+                piece_list[i].piece_type = 'Q';
+        }
+    }
 }
 
 Chess::~Chess(){ 
