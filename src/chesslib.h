@@ -51,7 +51,7 @@ class Chess {
         int is_checkmate();
         int move_type(int id, vector<int> crds);
         bool check_for_blockers(vector<int> target, Piece curr);
-        int pawn_change();
+        void pawn_change();
 };
 
 #endif

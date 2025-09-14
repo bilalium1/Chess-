@@ -243,7 +243,7 @@ int Chess::get_piece(vector<int> crds){
     return -1;
 }
 
-int Chess::pawn_change()
+void Chess::pawn_change()
 {
     for (int i=0;i<32;i++)
     {
