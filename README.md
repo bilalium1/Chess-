@@ -42,15 +42,21 @@ git clone https://github.com/bilalium1/Chess-.git
 - follow the instructions below depending on your OS.
 ## Windows ( beta male ) : 
 - just run the .exe file mate
-```
+```bash
 ./main.exe
 ```
 ## Linux ( gigachad )
 - pretty obvious
-```
-./main
+```bash
+./main.out
 ```
 - this also works for Mactards
+
+ ### if no main.exe/main.out
+ - run make (make sure you have make installed)
+```bash
+make
+```
 
 Thanks for reading. :)
 
