@@ -37,7 +37,7 @@ This is what the game looks like :
 # How to Play :
 ## Download Executables (loser route) :
 - right here -> [terminal chess download](https://github.com/bilalium1/Chess-/releases/tag/Chess-Executables)
-## Build program like a real man : 
+## Build program (like a real man) : 
 - make sure you have these installed ``git, make, g++``
 - Clone the rep :
 ```bash
