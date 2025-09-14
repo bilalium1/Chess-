@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define N 4
 
@@ -116,10 +117,10 @@ int place_queen(int places[N][N], int * queens, int log[N])
     }
 }
 
-void ten_queen()
+void N_queen(int size)
 {
-    int places[N][N] = {0};
-    int log[N];
+    int **places;
+    int log[size];
     int queens_placed = 0;
 
     for (int i = 0; i< N; i++) log[i] = -1;
