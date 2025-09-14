@@ -26,6 +26,8 @@ int main(){
 
     Chess game;
     game.display();
+
+    int mv;
     
 
     //game loop
@@ -41,15 +43,18 @@ int main(){
                 case 13:
                     if (game.select_piece==-1){
                         // select piece
-                        if (game.get_piece(game.cursor)!=-1){
+                        if (game.get_piece(game.cursor)!=-1 && (game.get_piece(game.cursor) <= 15) == game.turn){
                             game.select[0]=game.cursor[0]; game.select[1]=game.cursor[1];
                             game.select_piece=game.get_piece(game.cursor);
                         }
                     } else {
                         // move piece
-                        game.move(game.get_piece(game.select), game.cursor);
+                        mv = game.move(game.get_piece(game.select), game.cursor);
                         game.select={-1,-1};
                         game.select_piece=-1;
+                        if (mv > -1)
+                            game.turn = !game.turn;
+
                     }
                     break;
                 default: break;

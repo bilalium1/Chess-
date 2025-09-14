@@ -69,46 +69,31 @@ Chess::Chess(){
     int j=0;
 
     // UPSIDE TEAM
-    // king
-    piece_list[j]=Piece(j, {4,0},true, 'K'); ++j;
-    // queen 
-    piece_list[j]=Piece(j, {3,0},true, 'Q'); ++j;
-    // rooks
-    piece_list[j]=Piece(j, {0,0},true, 'r'); ++j;
-    piece_list[j]=Piece(j, {7,0},true, 'r'); ++j;
-    // bishops
-    piece_list[j]=Piece(j, {1,0},true, 'b'); ++j;
-    piece_list[j]=Piece(j, {6,0},true, 'b'); ++j;
-    // knights
-    piece_list[j]=Piece(j, {2,0},true, 'k'); ++j;
-    piece_list[j]=Piece(j, {5,0},true, 'k'); ++j;
+    piece_list[j++]=Piece(j, {4,0},true, 'K');  // king
+    piece_list[j++]=Piece(j, {3,0},true, 'Q');  // queen
+    piece_list[j++]=Piece(j, {0,0},true, 'r');  // rooks
+    piece_list[j++]=Piece(j, {7,0},true, 'r');
+    piece_list[j++]=Piece(j, {1,0},true, 'b');  // bishops
+    piece_list[j++]=Piece(j, {6,0},true, 'b');
+    piece_list[j++]=Piece(j, {2,0},true, 'k');  // knights
+    piece_list[j++]=Piece(j, {5,0},true, 'k');
     for (int i=0; i<8; i++,j++)
         piece_list[j]=Piece(j,{i,1},true,'p'); // pawns
 
     // DOWNSIDE TEAM
-
-    piece_list[j]=Piece(j, {4,7},false, 'K'); ++j;
-    // queen 
-    piece_list[j]=Piece(j, {3,7},false, 'Q'); ++j;
-    // rooks
-    piece_list[j]=Piece(j, {0,7},false, 'r'); ++j;
-    piece_list[j]=Piece(j, {7,7},false, 'r'); ++j;
-    // bishops
-    piece_list[j]=Piece(j, {1,7},false, 'b'); ++j;
-    piece_list[j]=Piece(j, {6,7},false, 'b'); ++j;
-    // knights
-    piece_list[j]=Piece(j, {2,7},false, 'k'); ++j;
-    piece_list[j]=Piece(j, {5,7},false, 'k'); ++j;
+    piece_list[j++]=Piece(j, {4,7},false, 'K');  // king
+    piece_list[j++]=Piece(j, {3,7},false, 'Q');  // queen
+    piece_list[j++]=Piece(j, {0,7},false, 'r');  // rooks
+    piece_list[j++]=Piece(j, {7,7},false, 'r');
+    piece_list[j++]=Piece(j, {1,7},false, 'b');  // bishops
+    piece_list[j++]=Piece(j, {6,7},false, 'b');
+    piece_list[j++]=Piece(j, {2,7},false, 'k');  // knights
+    piece_list[j++]=Piece(j, {5,7},false, 'k');
     for (int i=0; i<8; i++,j++)
         piece_list[j]=Piece(j,{i,6},false,'p'); // pawns
 }
 
 int Chess::move_type(int id, vector<int> crds){
-
-    // -1 no move
-    // 0 normal move
-    // 1 eat move
-
     Piece curr=piece_list[id];
     int move_verf=piece_list[id].move_verified(crds);
     int target_id=get_piece(crds);
@@ -117,20 +102,14 @@ int Chess::move_type(int id, vector<int> crds){
     if (target_id > -1 && piece_list[target_id].side_up==curr.side_up) return -1;
 
     if (curr.piece_type == 'p') {
-
         int coeff = (curr.side_up) ? 1 : -1; 
         if (crds[0]-curr.x==0) {
-            // Forward movement
-            if (crds[1]-curr.y==1*coeff && get_piece(crds)==-1) return 0;
-            else if (crds[1] - curr.y == 2 * coeff && curr.y == curr.y_s && get_piece(crds) == -1) return 0;
+            if ((crds[1]-curr.y==1*coeff || (crds[1]-curr.y==2*coeff && curr.y == curr.y_s)) && get_piece(crds)==-1)
+                return 0;
             else return -1;
-        } else if (abs(crds[0] - curr.x)==1 && crds[1]-curr.y==1*coeff) {
-            // Diagonal capture'
-            if (target_id > -1) return 1;
-            else return -1;
-        } else {
-            return -1; // Invalid move
-        }
+        } else if (abs(crds[0]-curr.x)==1 && crds[1]-curr.y==1*coeff) {
+            return (target_id > -1) ? 1 : -1;
+        } else return -1;
     }
 
     if (move_verf){
@@ -168,13 +147,8 @@ void Chess::display(){
         for (int j = 0; j < 8; j++){
 
             if (select_piece!=-1 && (cursor[0]!=j || cursor[1]!=i)){
-                if (move_type(select_piece, {j,i})==0){
-                    cout<<"\033[43m"; // YELLOW BACKGROUND, MOVE
-                }
-
-                if (move_type(select_piece, {j,i})==1){
-                    cout<<"\033[44m"; // BLUE BACKGROUND, EAT
-                }
+                if (move_type(select_piece, {j,i})==0) cout<<"\033[43m"; // MOVE
+                if (move_type(select_piece, {j,i})==1) cout<<"\033[44m"; // EAT
             }
 
             if (cursor[0]==j && cursor[1]==i){
@@ -223,7 +197,6 @@ int Chess::move(int id, vector<int> crds){
     }
 
     return move_id;
-
 }
 
 vector<int> Chess::in_check(bool side)
