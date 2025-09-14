@@ -38,6 +38,11 @@ This is what the game looks like :
 - Clone the rep :
 ```bash
 git clone https://github.com/bilalium1/Chess-.git
+cd Chess-
+```
+- run ``make`` command
+```bash
+make
 ```
 - follow the instructions below depending on your OS.
 ## Windows ( beta male ) : 
@@ -52,11 +57,8 @@ git clone https://github.com/bilalium1/Chess-.git
 ```
 - this also works for Mactards
 
- ### if no main.exe/main.out
- - run make (make sure you have make installed)
-```bash
-make
-```
+ ## having issues?
+ - i don't care 
 
 Thanks for reading. :)
 
