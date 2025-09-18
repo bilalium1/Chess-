@@ -131,8 +131,6 @@ int main(){
     int mv;
     int game_mode = 0;
 
-    system("cd");
-
     cout << "\n\n" <<"| Choose Game mode : " << "\n\n" << " -> 0 : PLAYER VS PLAYER" << "\n\n" << " -> 1 : PLAYER VS CPU" << "\n\n";
     cin >> game.gamemode;
 
