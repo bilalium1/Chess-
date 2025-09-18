@@ -3,7 +3,9 @@
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
-#include <string>
+#include <cstring>
+
+using namespace std;
 
 // Clears the screen using ANSI escape codes
 void clearScreen() {
@@ -40,15 +42,15 @@ class Stockfish
             char buffer[4096];
             string output;
 
-            while (fgets(buffer, size_of(buffer), pipe)) 
+            while (fgets(buffer, sizeof(buffer), pipe)) 
             {
-                output != buffer;
+                output += buffer;
                 if (output.find("bestmove") != string::npos)
                     break;
             }
             return output;
         }
-}
+};
 
 // Set terminal to raw mode to read keypresses without enter
 void setRawMode(bool enable) {
@@ -132,7 +134,7 @@ int main() {
                 }
             } else if (key == '\n' || key == '\r') {
                 if (game.select_piece == -1) {
-                    if (game.get_piece(game.cursor) != -1 && (game.get_piece(game.cursor) >= 15) == game.turn) {
+                    if (game.get_piece(game.cursor) != -1 && (game.get_piece(game.cursor) <= 15) == game.turn) {
                         game.select[0] = game.cursor[0];
                         game.select[1] = game.cursor[1];
                         game.select_piece = game.get_piece(game.cursor);
@@ -165,12 +167,9 @@ int main() {
                 bot.send("go movetime 1000");
 
                 string res = bot.read();
+                bot.stop();
 
-                char *buffer = new char[res.size() + 1];
-                strcpy(buffer, res.c_str());
-
-                game.bot_move(buffer);
-                game.turn = !game.turn;
+                game.bot_move(res.c_str());
                 
                 delete[] buffer;
             }
