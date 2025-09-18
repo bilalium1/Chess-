@@ -4,6 +4,29 @@
 
 using namespace std;
 
+// GENERAL FUNCS
+
+int get_index(char *c, char f, int size)
+{
+    int i = 0;
+    while (i < size)
+    {
+        if (c[i] == f)
+            return i;
+        i++;
+    }
+}
+
+char to_upper(char c)
+{
+    return (c >= 'a' && c <= 'z' ? c - 32 : c);
+}
+
+char to_lower(char c)
+{
+    return (c >= 'A' && c <= 'Z' ? c + 32 : c);
+}
+
 Piece::Piece(int id, vector<int> s_pos, int side, char p_t){
     piece_id=id; x=s_pos[0]; y=s_pos[1]; side_up=side; piece_type=p_t; x_s=s_pos[0]; y_s=s_pos[1]; 
 }
@@ -65,6 +88,8 @@ Chess::Chess(){
     piece_list = new Piece[32];
     p1_list = new Piece[16];
     p2_list = new Piece[16];
+    turn = false;
+    cursor = {0,7};
     
     int j=0;
 
@@ -73,10 +98,10 @@ Chess::Chess(){
     piece_list[j++]=Piece(j, {3,0},true, 'Q');  // queen
     piece_list[j++]=Piece(j, {0,0},true, 'r');  // rooks
     piece_list[j++]=Piece(j, {7,0},true, 'r');
-    piece_list[j++]=Piece(j, {1,0},true, 'b');  // bishops
-    piece_list[j++]=Piece(j, {6,0},true, 'b');
-    piece_list[j++]=Piece(j, {2,0},true, 'k');  // knights
-    piece_list[j++]=Piece(j, {5,0},true, 'k');
+    piece_list[j++]=Piece(j, {2,0},true, 'b');  // bishops
+    piece_list[j++]=Piece(j, {5,0},true, 'b');
+    piece_list[j++]=Piece(j, {1,0},true, 'k');  // knights
+    piece_list[j++]=Piece(j, {6,0},true, 'k');
     for (int i=0; i<8; i++,j++)
         piece_list[j]=Piece(j,{i,1},true,'p'); // pawns
 
@@ -85,10 +110,10 @@ Chess::Chess(){
     piece_list[j++]=Piece(j, {3,7},false, 'Q');  // queen
     piece_list[j++]=Piece(j, {0,7},false, 'r');  // rooks
     piece_list[j++]=Piece(j, {7,7},false, 'r');
-    piece_list[j++]=Piece(j, {1,7},false, 'b');  // bishops
-    piece_list[j++]=Piece(j, {6,7},false, 'b');
-    piece_list[j++]=Piece(j, {2,7},false, 'k');  // knights
-    piece_list[j++]=Piece(j, {5,7},false, 'k');
+    piece_list[j++]=Piece(j, {2,7},false, 'b');  // bishops
+    piece_list[j++]=Piece(j, {5,7},false, 'b');
+    piece_list[j++]=Piece(j, {1,7},false, 'k');  // knights
+    piece_list[j++]=Piece(j, {6,7},false, 'k');
     for (int i=0; i<8; i++,j++)
         piece_list[j]=Piece(j,{i,6},false,'p'); // pawns
 }
@@ -125,12 +150,12 @@ void Chess::display(){
     int i = 0;
 
     if (turn){
-        cout << "\033[1;45m Player 1";
+        cout << "\033[1;45m Player 2";
         i = p1_count;
         while (i >= 0) cout << p1_list[i--].piece_type << " < ";
         cout << " \033[0m" << endl;
     } else {
-        cout << "\033[1;42m Player 2";
+        cout << "\033[1;42m Player 1";
         i = p2_count;
         while (i >= 0) cout << p2_list[i--].piece_type << " < ";
         cout << " \033[0m" << endl;
@@ -175,8 +200,8 @@ void Chess::display(){
         cout << "\033[47m\033[30m  \033[0m\n";
     }
     cout << "\033[47m\033[30m                     \033[0m\n";
-    cout << (check_up[0]!=-1 ? "PLAYER 1 IN CHECK\n\n" : "");
-    cout << (check_down[0]!=-1 ? "PLAYER 2 IN CHECK\n\n" : "");
+    cout << (check_up[0]!=-1 ? "PLAYER 2 IN CHECK\n\n" : "");
+    cout << (check_down[0]!=-1 ? "PLAYER 1 IN CHECK\n\n" : "");
 }
 
 int Chess::move(int id, vector<int> crds){
@@ -253,6 +278,72 @@ void Chess::pawn_change()
                 piece_list[i].piece_type = 'Q';
         }
     }
+}
+
+char *Chess::get_FEN()
+{
+    char *FEN = (char *)malloc(100);
+    int fen_cnt = 0;
+    int emp_cnt = 0;
+    for (int i=7;i >= 0;i--)
+    {
+        for (int j=0;j < 8;j++)
+        {
+            int id = get_piece({j, i});
+
+            if (id > -1)
+            {
+                if (emp_cnt > 0)
+                    FEN[fen_cnt++] = emp_cnt + '0';
+                emp_cnt = 0;
+                char pc_type = piece_list[id].piece_type;
+                if (pc_type == 'k')
+                    pc_type = 'n';
+                if (piece_list[id].side_up)
+                    pc_type = to_upper(pc_type);
+                else
+                    pc_type = to_lower(pc_type);
+                FEN[fen_cnt++] = pc_type;
+            }
+            else 
+            {
+                ++emp_cnt;
+            }
+        }
+        if (emp_cnt > 0) 
+            FEN[fen_cnt++] = emp_cnt + '0';
+        emp_cnt = 0;
+        if (i > 0) FEN[fen_cnt++] = '/';
+    }
+
+        FEN[fen_cnt++] = ' ';
+        FEN[fen_cnt++] = 'w';
+        FEN[fen_cnt++] = ' ';
+        FEN[fen_cnt++] = '-';
+        FEN[fen_cnt++] = ' ';
+        FEN[fen_cnt++] = '-';
+        FEN[fen_cnt++] = ' ';
+        FEN[fen_cnt++] = '0';
+        FEN[fen_cnt++] = ' ';
+        FEN[fen_cnt++] = '1';
+
+        while (fen_cnt < 100)
+            FEN[fen_cnt++] = 0;
+
+
+    return FEN;
+}
+
+void Chess::bot_move(const char *move_data)
+{
+    char letters[9] = "abcdefgh";
+
+    cout << "MOVE DATA : " << move_data << endl;
+    
+    vector<int> src = {get_index(letters, move_data[0], 8), move_data[1] - 49};
+    vector<int> dst = {get_index(letters, move_data[2], 8), move_data[3] - 49};
+
+    move(get_piece(src), dst);
 }
 
 Chess::~Chess(){ 

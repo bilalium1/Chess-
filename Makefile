@@ -1,3 +1,5 @@
+.IGNORE: win lin
+
 all: win lin
 
 win: main.exe

@@ -46,12 +46,15 @@ class Chess {
         int move(int id, vector<int> crds);
         void display(); 
         int get_piece(vector<int> crds);
-        bool turn = true;
+        bool turn = false;
+        bool gamemode = false;
         vector<int> in_check(bool side);
         int is_checkmate();
         int move_type(int id, vector<int> crds);
         bool check_for_blockers(vector<int> target, Piece curr);
         void pawn_change();
+        char *get_FEN();
+        void bot_move(const char *move_data);
 };
 
 #endif

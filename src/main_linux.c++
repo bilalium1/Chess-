@@ -79,7 +79,7 @@ int main() {
                 }
             } else if (key == '\n' || key == '\r') {
                 if (game.select_piece == -1) {
-                    if (game.get_piece(game.cursor) != -1 && (game.get_piece(game.cursor) <= 15) == game.turn) {
+                    if (game.get_piece(game.cursor) != -1 && (game.get_piece(game.cursor) >= 15) == game.turn) {
                         game.select[0] = game.cursor[0];
                         game.select[1] = game.cursor[1];
                         game.select_piece = game.get_piece(game.cursor);
