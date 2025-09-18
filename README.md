@@ -35,22 +35,30 @@ This is what the game looks like :
 (it looks much better on the terminal trust me)
 
 # How to Play :
+## Download Executables (loser route) :
+- right here -> [terminal chess download](https://github.com/bilalium1/Chess-/releases/tag/Chess-Executables)
+## Build program (like a real man) : 
+- make sure you have these installed ``git, make, g++``
 - Clone the rep :
 ```bash
 git clone https://github.com/bilalium1/Chess-.git
 cd Chess-
 ```
-- run ``make`` command
-```bash
-make
-```
 - follow the instructions below depending on your OS.
 ## Windows ( beta male ) : 
-- just run the .exe file mate
+- run this
+```bash
+make win
+```
+- now you can simply run the exe file
 ```bash
 ./main.exe
 ```
 ## Linux ( gigachad )
+- make
+```
+make lin
+```
 - pretty obvious
 ```bash
 ./main.out
