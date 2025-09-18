@@ -3,10 +3,51 @@
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
+#include <string>
 
 // Clears the screen using ANSI escape codes
 void clearScreen() {
     std::cout << "\033[2J\033[1;1H";
+}
+
+class Stockfish 
+{
+    FILE* pipe = nullptr;
+
+    public:
+        bool start(const string& path) 
+        {
+            pipe = popen(path.c_str(), "w+");
+            if (!pipe)
+            {
+                cerr << "Failed to launch Stockfish\n";
+                return false; 
+            }
+            return true;
+        } 
+
+        void send(const string& cmd) 
+        {
+            if (!pipe) return ;
+            string data = cmd + "\n";
+            fwrite(data.c_str(), 1, data.size(), pipe);
+            fflush(pipe);
+        }
+
+        string read()
+        {
+            if (!pipe) return "";
+            char buffer[4096];
+            string output;
+
+            while (fgets(buffer, size_of(buffer), pipe)) 
+            {
+                output != buffer;
+                if (output.find("bestmove") != string::npos)
+                    break;
+            }
+            return output;
+        }
 }
 
 // Set terminal to raw mode to read keypresses without enter
@@ -56,9 +97,21 @@ char getch() {
 
 int main() {
     Chess game;
-    game.display();
+    Stockfish bot;
 
     setRawMode(true); // enable raw input
+
+    cout << "\n\n" <<"| Choose Game mode : " << "\n\n" << " -> 0 : PLAYER VS PLAYER" << "\n\n" << " -> 1 : PLAYER VS CPU" << "\n\n";
+    cin >> game.gamemode;
+    
+    if (game.gamemode > 0)
+    {
+        if (!bot.start("stockfish/stockfish"))
+        return 1;
+    }
+
+    clearScreen();
+    game.display();
 
     int mv;
 
@@ -102,8 +155,28 @@ int main() {
             if (game.is_checkmate() != 0)
                 break;   
 
+            if (game.gamemode > 0 && game.turn)
+            {
+                bot.stop();
+                bot.start("stockfish/stockfish");
+                string fen = game.get_FEN();
+                cout << "Hold on let me think...\n";
+                bot.send("position fen " + fen);
+                bot.send("go movetime 1000");
+
+                string res = bot.read();
+
+                char *buffer = new char[res.size() + 1];
+                strcpy(buffer, res.c_str());
+
+                game.bot_move(buffer);
+                game.turn = !game.turn;
+                
+                delete[] buffer;
+            }
             clearScreen();
             game.display();
+
         }
     }
 
